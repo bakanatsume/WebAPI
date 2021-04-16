@@ -12,7 +12,7 @@ router.post('/sendMoney', (req, res) => {
     function createDateAsUTC(date) {
         return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds()));
     }
-    const Transaction = new transaction({
+    const Transaction = new transactionDetails({
         senderPhoneNumber: req.body.senderPhoneNumber,
         receiverPhoneNumber: req.body.receiverPhoneNumber,
         amount: req.body.amount,
@@ -54,32 +54,24 @@ router.post('/sendMoney', (req, res) => {
 })
 //-----------------------------------------Show Transaction Details--------------------------------------///
 
-router.get('/transactionDetails', guard.verifyUser, function (req, res) {
-    transaction.find().then(function (data) {
+router.get('/transactionDetails/:id', function (req, res) {
+    transactionDetails.find({senderPhoneNumber:req.params.id})
+    .then(function (data) {
         res.send(data);
+    }).catch(function(err){
+        res.send(400).json({error:err})
     })
-
 })
 
 //---------------------------------------Delete transaction History----------------------------------------//
 
-router.delete('/deleteTransaction/:id', guard.verifyUser, function (req, res) {
-    transaction.deleteOne({ _id: req.params.id }).
+router.delete('/deleteTransaction/:id', function (req, res) {
+    transactionDetails.deleteOne({ _id: req.params.id }).
         then(function () {
             res.status(200).json({ message: "Deleted Successfully" })
         }).catch(function (err) {
             res.statusCode(404).json({ error: err })
         })
-})
-
-///--------------------------------------find TRansaction----------------
-router.get('./transactionDetails/:id',function(req,res){
-    transaction.find({phoneNumber:req.params.id}).
-    then(function(){
-        res.send(200).json({message :"found Successfully"})
-    }).catch(function(err){
-        res.send(400).json({error:err})
-    })
 })
 
 module.exports = router;

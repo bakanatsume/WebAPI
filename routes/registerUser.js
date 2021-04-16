@@ -27,7 +27,6 @@ router.post('/registerUser', [
             data.password = hash;
             const dataInsert = new Register(data);
             dataInsert.save()
-            
 
                 .then(function (result) {
                     res.status(201).json({success:true, message: "Insert Successfull" })
@@ -37,10 +36,6 @@ router.post('/registerUser', [
                 })
         })
 })
-    // else {
-    //     res.status(400).json({success:false,err:"Error"});
-    // }
-
 
 
 // ---------------------------------------------------------- Login validation -------------------------------------
@@ -61,7 +56,7 @@ router.post('/login', function (req, res) {
                     return res.status(200).json({success:false, message: "Invalid Credentials" })
                 }
                 const token = jwt.sign({ userId: data._id }, 'anysecretkey');
-                return res.status(200).json({ success:true,message: "Login Success", token: token,phoneNumber:data.phoneNumber });
+                return res.status(200).json({ success:true,message: "Login Success", token: token,data:data});
             })
         })
         .catch(function (e) {
@@ -71,28 +66,18 @@ router.post('/login', function (req, res) {
 
 ////////////////////////////////////////----update PRofile
 
-router.put('/updateProfile/:id', upload.single('profilePicture'), function (req, res) {
-    console.log(req.file)
-    const err = validationResult(req);
-    if (err.isEmpty()) {
-        if (req.file == undefined) {
-            return res.status(400).json({
-                message: "Invalid picture format!!Please check the file format!!"
-            })
-        }
-    }
+router.put('/updateProfile/:id', function (req, res) {
+    console.log(req.body)
     const data = {
         firstName: req.body.firstName,
-        lastName: req.body.lastName,
+        lastName: req.body.lastName,    
         age: req.body.age,
-        gender: req.body.gender,
-        password: req.body.password,
+        address: req.body.address,
         email: req.body.email,
-        profilePicture: req.file.path
     }
     Register.updateOne({ _id: req.params.id }, data)
         .then(function () {
-            res.status(200).json({ message: "profile Updated Successfully" })
+            res.status(200).json({ success: true,message: "profile Updated Successfully" })
         })
         .catch(function (err) {
             res.status(400).json({ error: err })
@@ -112,5 +97,21 @@ router.get('/findUser/:id', function (req, res) {
         })
 })
 
+///---------------------------------update profile PIcture -------------------
+router.put('/updatePicture/:id', upload.single('profilePicture'), function (req, res) {
+    console.log(req.params)
+    console.log(req.file.path)
+    const  profilePicture = req.file.path
+    Register.findOneAndUpdate({ _id: req.params.id }, {profilePicture : profilePicture})
+        .then(function () {
+            res.status(200).json({ success: true,message: "profile Updated Successfully" })
+        })
+        .catch(function (err) {
+            res.status(400).json({ error: err })
+        })
+
+})
+
+/////////////////////////
 
 module.exports = router;

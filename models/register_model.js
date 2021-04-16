@@ -36,6 +36,10 @@ const register = mongoose.model('users', {
         type:Number,
         default:0
     },
+    profilePicture:{
+        type:String,
+        default: ""
+    },  
     role: {
         type: String,
         enum: ["Admin", "Client"],

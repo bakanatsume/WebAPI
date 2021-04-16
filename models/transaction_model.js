@@ -1,7 +1,11 @@
 const mongoose = require('mongoose')
 
 const transactionDetails = mongoose.model('transactionDetails', {
-    phoneNumber: {
+    senderPhoneNumber: {
+        type: String,
+        required: true
+    },
+    receiverPhoneNumber: {
         type: String,
         required: true
     },
@@ -9,15 +13,11 @@ const transactionDetails = mongoose.model('transactionDetails', {
         type: Number,
         required: true
     },
-    remarks : {
-        type : String,
-        require : true
-    },
-    date: {
+    dateAndTime: {
         type: String
     },
-    time: {
-        type: String
+    remarks: {
+        type: String,
     }
 })
 
