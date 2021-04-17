@@ -98,9 +98,9 @@ router.get('/findUser/:id', function (req, res) {
 })
 
 ///---------------------------------update profile PIcture -------------------
-router.put('/updatePicture/:id', upload.single('profilePicture'), function (req, res) {
-    console.log(req.params)
-    console.log(req.file.path)
+router.put('/updatePicture/:id',upload.single('file'), function (req, res) {
+    // console.log(req.file)
+    // return
     const  profilePicture = req.file.path
     Register.findOneAndUpdate({ _id: req.params.id }, {profilePicture : profilePicture})
         .then(function () {

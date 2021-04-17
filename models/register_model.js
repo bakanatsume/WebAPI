@@ -38,7 +38,7 @@ const register = mongoose.model('users', {
     },
     profilePicture:{
         type:String,
-        default: ""
+        default: "pictures/default.png"
     },  
     role: {
         type: String,

@@ -8,6 +8,7 @@ const transactionDetails = require('../models/transaction_model');
 
 //--------------------------------------Adding Fund------------------------------------------//
 router.post('/sendMoney', (req, res) => {
+    console.log(req.body.senderPhoneNumber)
     var date = new Date();
     function createDateAsUTC(date) {
         return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds()));

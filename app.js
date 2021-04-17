@@ -10,6 +10,7 @@ const app = express();
 
 
 app.use(express.json());
+app.use('/pictures', express.static('./pictures'))
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(userRoute);
 app.use(transactionRoute);
