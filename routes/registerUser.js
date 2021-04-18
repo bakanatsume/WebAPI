@@ -102,16 +102,31 @@ router.put('/updatePicture/:id',upload.single('file'), function (req, res) {
     // console.log(req.file)
     // return
     const  profilePicture = req.file.path
-    Register.findOneAndUpdate({ _id: req.params.id }, {profilePicture : profilePicture})
-        .then(function () {
-            res.status(200).json({ success: true,message: "profile Updated Successfully" })
+    Register.findOneAndUpdate({ _id: req.params.id }, {profilePicture : profilePicture},{new:true})
+        .then(function (data) {
+            console.log(data.profilePicture)
+                    res.status(200).json({ success: true,data: data.profilePicture })
         })
         .catch(function (err) {
             res.status(400).json({ error: err })
         })
-
 })
 
-/////////////////////////
+///////////////////////// update password///////////////
+
+router.put('/updatePassword/:id',function(req,res){
+    
+    const password = req.body.password
+    bcryptjs.hash(password,10,function(err,hash){
+        const password = hash
+        Register.updateOne({_id:req.params.id},{password:password})
+        .then(function(){
+            res.status(200).json({success:true,message:"Updated Successfully"})
+        })
+        .catch(function(err){
+            res.status(400).json({error:err})
+        })
+    })
+})
 
 module.exports = router;
