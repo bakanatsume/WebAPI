@@ -75,4 +75,41 @@ router.delete('/deleteTransaction/:id', function (req, res) {
         })
 })
 
+///--------------------------------------Adding Fund------------------------------------------//
+router.post('/registrationFundLoad', function (req, res) {
+    var date = new Date();
+    function createDateAsUTC(date) {
+        return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds()));
+    }
+    const adminNumber = "000000";
+    const remarks = "fund loaded by admin";
+    const Transaction = new transactionDetails({
+        senderPhoneNumber: adminNumber,
+        receiverPhoneNumber: req.body.receiverPhoneNumber,
+        amount: req.body.amount,
+        remarks: remarks,
+        dateAndTime: date
+    })
+    Transaction.save()
+        .then(async data => {
+            await register.find({ phoneNumber: data.receiverPhoneNumber })
+                .then(async user2 => {
+                    console.log('user2', user2)
+                    if (user2.length == 0) {
+                        return res.status(400).json({ success: false, message: "Invalid Credentials" })
+                    }
+                    else {
+                        let balance = user2[0].userBalance + data.amount
+                        user2[0].userBalance = balance
+                        await register.updateOne({ _id: user2[0]._id }, user2[0])
+                    }
+                })
+            return res.status(200).json({ success: true, message: "Fund has been transferred" })
+        })
+        .catch(e => {
+            res.status(404).json({ error: e })
+        })
+})
+
+
 module.exports = router;
